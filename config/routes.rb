@@ -1,6 +1,14 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  post 'auth/login', to: 'authentication#authenticate'
 
-  # Defines the root path route ("/")
-  # root "articles#index"
+  # resources :notes
+  # resources :tickets do
+  #   resources :comments
+  # end
+  # resources :departments
+  # resources :users
+  # get 'users/me' => 'users#me'
+  # get 'report' => 'tickets#report'
+  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  get '*other', to: redirect('/')
 end
