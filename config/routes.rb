@@ -1,4 +1,13 @@
 Rails.application.routes.draw do
+  namespace :api do
+    namespace :v1 do
+      resources :questions
+      resources :tests
+      resources :students
+      resources :teachers
+      resources :options
+    end
+  end
   post 'auth/login', to: 'authentication#authenticate'
 
   # resources :notes
