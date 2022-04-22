@@ -117,6 +117,8 @@ GEM
       racc (~> 1.4)
     puma (5.6.4)
       nio4r (~> 2.0)
+    pundit (2.2.0)
+      activesupport (>= 3.0.0)
     racc (1.6.0)
     rack (2.2.3)
     rack-test (1.1.0)
@@ -189,6 +191,7 @@ DEPENDENCIES
   jwt
   mysql2 (~> 0.5)
   puma (~> 5.0)
+  pundit
   rails (~> 7.0.2, >= 7.0.2.3)
   rspec-rails
   simple_command
