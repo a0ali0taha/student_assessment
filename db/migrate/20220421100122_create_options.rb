@@ -3,7 +3,7 @@ class CreateOptions < ActiveRecord::Migration[7.0]
     create_table :options do |t|
       t.string :title
       t.boolean :is_correct
-      t.references :questions, null: false, foreign_key: true
+      t.references :question, null: false, foreign_key: true
 
       t.timestamps
     end

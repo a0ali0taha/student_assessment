@@ -1,16 +1,15 @@
 class Api::V1::TestsController < ApplicationController
-  before_action :set_api_v1_test, only: %i[ show update destroy ]
+  before_action :set_api_v1_test, only: %i[ show update destroy save_test ]
 
   # GET /api/v1/tests
   def index
     @api_v1_tests = Test.all
-
     render json: @api_v1_tests
   end
 
   # GET /api/v1/tests/1
   def show
-    render json: @api_v1_test
+    render json: @api_v1_test.as_json(methods: [:questions])
   end
 
   # POST /api/v1/tests
@@ -38,10 +37,14 @@ class Api::V1::TestsController < ApplicationController
     @api_v1_test.destroy
   end
 
+  def save_test
+    render json:{message: 'saved successfully'}
+  end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_api_v1_test
       @api_v1_test = Test.find(params[:id])
+
     end
 
     # Only allow a list of trusted parameters through.
