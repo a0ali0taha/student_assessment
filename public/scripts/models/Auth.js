@@ -8,7 +8,7 @@ var Auth = module.exports = {
   login: function(email, password){
     return m.request({
       method: 'POST',
-      url: '/auth/login',
+      url: '/portal/auth/login',
       data: {email:email, password:password},
       unwrapSuccess: function(res) {
         localStorage.token = res.auth_token;
@@ -25,28 +25,8 @@ var Auth = module.exports = {
     delete localStorage.token;
   },
 
-  // signup on the server for new login credentials
-  register: function(email, password,name,type){
-    return m.request({
-      method: 'POST',
-      url: '/users',
-      data: {user:{email:email, password:password,type:type,name: name}}
-    });
-  },
 
-  // ensure verify token is correct
-  verify: function(token){
-    return m.request({
-      method: 'POST',
-      url: '/auth/verify',
-      data: {token: token}
-    });
-  },
 
-  // get current user object
-  user: function(){
-    return Auth.req('/users/me');
-  },
 
   // make an authenticated request
   req: function(options){

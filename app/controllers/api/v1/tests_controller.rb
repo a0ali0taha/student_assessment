@@ -4,7 +4,8 @@ class Api::V1::TestsController < ApplicationController
   # GET /api/v1/tests
   def index
     @tests = Test.joins(:questions).group('questions.test_id').select('tests.*, COUNT(*) as question_count')
- 
+    x=request.env['HTTP_USER_AGENT']
+    p x
     render json: @tests
   end
 

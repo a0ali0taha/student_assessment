@@ -14,7 +14,7 @@ var Login = module.exports = {
         .then(function(){
           m.route(Auth.originalRoute || '/', null, true);
         }, function(err){
-          ctrl.error(m(".alert.alert-danger.animated.fadeInUp", err.message));
+          ctrl.error(m(".alert.alert-danger.animated.fadeInUp", JSON.stringify(err)));
         });
     };
   },  
