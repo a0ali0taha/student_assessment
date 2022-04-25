@@ -4,8 +4,6 @@ class Api::V1::TestsController < ApplicationController
   # GET /api/v1/tests
   def index
     @tests = Test.joins(:questions).group('questions.test_id').select('tests.*, COUNT(*) as question_count')
-    x=request.env['HTTP_USER_AGENT']
-    p x
     render json: @tests
   end
 
@@ -17,7 +15,7 @@ class Api::V1::TestsController < ApplicationController
 
   # POST /api/v1/tests
   def create
-    @test = Test.new(test_params)
+    @test = authorize Test.new(test_params)
 
     if @test.save
       render json: @test, status: :created
@@ -28,6 +26,7 @@ class Api::V1::TestsController < ApplicationController
 
   # PATCH/PUT /api/v1/tests/1
   def update
+    authorize @test
     if @test.update(test_params)
       render json: @test
     else
@@ -37,6 +36,7 @@ class Api::V1::TestsController < ApplicationController
 
   # DELETE /api/v1/tests/1
   def destroy
+    authorize @test
     @test.destroy
   end
 

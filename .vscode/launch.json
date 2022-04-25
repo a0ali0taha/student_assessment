@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "RSpec - active spec file only",
+            "type": "Ruby",
+            "request": "launch",
+            "program": "/home/ahmed/.rvm/gems/ruby-3.0.0/bin/rspec",
+            "args": [
+                "-I",
+                "${workspaceRoot}",
+                "${file}"
+            ],
+            "debuggerPort": "12345"
+        },
+        {
             "name": "Launch Program",
             "program": "${workspaceFolder}/gulpfile.js",
             "request": "launch",

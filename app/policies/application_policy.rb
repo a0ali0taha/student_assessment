@@ -13,7 +13,7 @@ class ApplicationPolicy
   end
 
   def show?
-    teacher?
+    true
   end
 
   def create?
