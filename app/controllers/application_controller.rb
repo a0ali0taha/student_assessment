@@ -4,7 +4,13 @@ class ApplicationController < ActionController::API
     include Pundit::Authorization
     # after_action :verify_authorized
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+    rescue_from ActionController::UnpermittedParameters, with: :render_unpermitted_params_response
 
+
+
+    def render_unpermitted_params_response
+      render json: { "Unpermitted Parameters": params.to_unsafe_h.except(:controller, :action, :id, :username, :password).keys }, status: :unprocessable_entity
+    end
     private
 
     def user_not_authorized

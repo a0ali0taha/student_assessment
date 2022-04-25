@@ -1,54 +1,59 @@
 class Api::V1::TestsController < ApplicationController
-  before_action :set_api_v1_test, only: %i[ show update destroy save_test ]
-
+  before_action :set_test, only: %i[  update destroy save_test ]
+  
   # GET /api/v1/tests
   def index
-    @api_v1_tests = Test.all
-    render json: @api_v1_tests
+    @tests = Test.joins(:questions).group('questions.test_id').select('tests.*, COUNT(*) as question_count')
+ 
+    render json: @tests
   end
 
   # GET /api/v1/tests/1
   def show
-    render json: @api_v1_test.as_json(methods: [:questions])
+    @test=Test.get_test_with_all_asosications(params[:id])
+    render json: @test
   end
 
   # POST /api/v1/tests
   def create
-    @api_v1_test = Test.new(api_v1_test_params)
+    @test = Test.new(test_params)
 
-    if @api_v1_test.save
-      render json: @api_v1_test, status: :created, location: @api_v1_test
+    if @test.save
+      render json: @test, status: :created
     else
-      render json: @api_v1_test.errors, status: :unprocessable_entity
+      render json: @test.errors, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /api/v1/tests/1
   def update
-    if @api_v1_test.update(api_v1_test_params)
-      render json: @api_v1_test
+    if @test.update(test_params)
+      render json: @test
     else
-      render json: @api_v1_test.errors, status: :unprocessable_entity
+      render json: @test.errors, status: :unprocessable_entity
     end
   end
 
   # DELETE /api/v1/tests/1
   def destroy
-    @api_v1_test.destroy
+    @test.destroy
   end
 
   def save_test
     render json:{message: 'saved successfully'}
   end
+ 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_api_v1_test
-      @api_v1_test = Test.find(params[:id])
+    def set_test
+      @test = Test.find(params[:id])
 
     end
 
     # Only allow a list of trusted parameters through.
-    def api_v1_test_params
-      params.fetch(:api_v1_test, {})
+    def test_params
+      p=params.fetch(:test, {}).permit(:name, :description,questions_attributes: [:label,:description, options_attributes: [:title,:is_correct]])
+
+      
     end
 end

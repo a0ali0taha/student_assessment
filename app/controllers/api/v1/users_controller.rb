@@ -5,13 +5,13 @@ class Api::V1::UsersController < ApplicationController
     def index
       @api_v1_users = authorize model.all
   
-      render json: @api_v1_users
+      render json: @api_v1_users.as_json(methods: [:type])
     end
   
     # GET /api/v1/users/1
     def show
   
-      render json: @api_v1_user 
+      render json: @api_v1_user.as_json(methods: [:type])
     end
   
     # POST /api/v1/users
@@ -51,7 +51,7 @@ class Api::V1::UsersController < ApplicationController
   
       # Only allow a list of trusted parameters through.
       def api_v1_user_params
-        params.fetch(:user, {}).permit(:name, :email,:password)
+        params.fetch(:user, {}).permit(:name, :email,:password,:type)
         # params.require(:user).permit(:name)
       end
   end
