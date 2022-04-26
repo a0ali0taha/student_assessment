@@ -38,6 +38,7 @@ class Api::V1::TestsController < ApplicationController
   def destroy
     authorize @test
     @test.destroy
+    render json:{message: 'deleted successfully'}
   end
 
   def save_test

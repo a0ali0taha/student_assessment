@@ -18,20 +18,28 @@ RSpec.describe "/users", type: :request do
   # adjust the attributes here as well.
   
   let(:list2) {
-    FactoryBot.create_list(:user,2)   
+    FactoryBot.create_list(:teacher,2)   
   }
   let(:valid_user) {
-    FactoryBot.create(:user)   
+    FactoryBot.create(:teacher)   
   }
-  let!(:my_user) { FactoryBot.create(:user) }
-  let(:valid_attributes){{user:{
+  # let!(:my_user) { FactoryBot.create(:user) }
+  let(:valid_attributes_teacher){{user:{
     name: Faker::Name.name,
     email:  Faker::Internet.email,
-    password: Faker::Internet.password }}}
+    password: Faker::Internet.password ,
+    type: 'Teacher'
+    }}}
+
+    let(:valid_attributes_student){{user:{
+      name: Faker::Name.name,
+      email:  Faker::Internet.email,
+      password: Faker::Internet.password,
+      type: 'Student'}}}
+    
   
-  
-  let(:user) { FactoryBot.create(:user) }
-  let(:user_token){JsonWebToken.encode(user_id: user.id)}
+  # let(:user) { FactoryBot.create(:user) }
+  # let(:teacher_token){JsonWebToken.encode(user_id: user.id)}
   let(:teacher) { FactoryBot.create(:teacher) }
   let(:teacher_token){JsonWebToken.encode(user_id: teacher.id)}
   let(:student) { FactoryBot.create(:student) }
@@ -48,14 +56,15 @@ RSpec.describe "/users", type: :request do
     before {
       
       list2
-      get '/api/v1/users', headers: {Authorization:  user_token  }
     }
     it "teacher can get users" do
+      get '/api/v1/users', headers: {Authorization:  teacher_token  }
       expect(response.status).to eq(200)
     end
 
 
     it "student can not get users" do
+      get '/api/v1/users', headers: {Authorization:  student_token  }
       expect(json['message']).to eq("You are not authorized to perform this action.")
     end
 
@@ -95,17 +104,21 @@ RSpec.describe "/users", type: :request do
      
       
       it "rejects unauthintcated user" do
-        post '/api/v1/users', params: valid_attributes
+        post '/api/v1/users', params: valid_attributes_teacher
         expect(response.status).to eq(401)
       end
 
-      it "teachers can create user" do
-        post '/api/v1/users', params: valid_attributes, headers: {Authorization:  teacher_token  }
-        expect(json['name']).to eq(valid_attributes[:user][:name])
+      it "teachers can create teachers" do
+        post '/api/v1/users', params: valid_attributes_teacher, headers: {Authorization:  teacher_token  }
+        expect(json['name']).to eq(valid_attributes_teacher[:user][:name])
       end
 
+      it "teachers can create students" do
+        post '/api/v1/users', params: valid_attributes_teacher, headers: {Authorization:  teacher_token  }
+        expect(json['name']).to eq(valid_attributes_teacher[:user][:name])
+      end
       it "student cannot create user" do
-        post '/api/v1/users', params: valid_attributes, headers: {Authorization:  student_token  }
+        post '/api/v1/users', params: valid_attributes_teacher, headers: {Authorization:  student_token  }
         expect(json['message']).to eq("You are not authorized to perform this action.")
       end
 
@@ -115,7 +128,7 @@ RSpec.describe "/users", type: :request do
 
 
       it "can not save user without email" do
-        attr=valid_attributes
+        attr=valid_attributes_teacher
         attr[:user][:email]=nil
         post '/api/v1/users', params: attr, headers: {Authorization:  teacher_token  }
         expect(json['email'][0]).to eq("can't be blank")
@@ -123,7 +136,7 @@ RSpec.describe "/users", type: :request do
 
       it "can not use already exist email" do
         user=valid_user
-        attr=valid_attributes
+        attr=valid_attributes_teacher
         attr[:user][:email]=valid_user.email
         post '/api/v1/users', params: attr, headers: {Authorization:  teacher_token  }
         expect(json['email'][0]).to eq("has already been taken")

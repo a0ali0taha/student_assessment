@@ -1,7 +1,8 @@
 class UserPolicy < ApplicationPolicy
 
   def show?
-    teacher?
+    x=teacher?
+    p x
   end
   class Scope < Scope
     # NOTE: Be explicit about which records you allow access to!

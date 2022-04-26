@@ -64,8 +64,8 @@ RSpec.describe "/tests", type: :request do
                      {
                          "title": Faker::Name.name,
                          "is_correct": false}]}]}}}
-  let(:user) { FactoryBot.create(:user) }
-  let(:user_token){JsonWebToken.encode(user_id: user.id)}
+  # let(:user) { FactoryBot.create(:user) }
+  # let(:user_token){JsonWebToken.encode(user_id: user.id)}
   let(:teacher) { FactoryBot.create(:teacher) }
   let(:teacher_token){JsonWebToken.encode(user_id: teacher.id)}
   let(:student) { FactoryBot.create(:student) }
@@ -82,7 +82,7 @@ RSpec.describe "/tests", type: :request do
     before {
       
       list2
-      get '/api/v1/tests', headers: {Authorization:  user_token  }
+      get '/api/v1/tests', headers: {Authorization:  teacher_token  }
     }
     it "teacher can get tests" do
       expect(response.status).to eq(200)
@@ -215,5 +215,23 @@ RSpec.describe "/tests", type: :request do
 
     end
 
+  end
+
+  describe "post /save_test" do
+    before{
+      test = valid_test
+    }
+    it "renders saved successfully for authinticated " do
+       
+      post "/api/v1/tests/#{valid_test.id}/save_test"  ,params:{},   headers: {Authorization:  student_token  }
+      expect(json['message']).to eq("saved successfully")
+
+    end
+
+    it "rejects unauthinticated " do
+      post "/api/v1/tests/#{valid_test.id}/save_test"   ,params:{}
+      expect(json['error']).to eq("Not Authorized")
+
+    end
   end
 end
